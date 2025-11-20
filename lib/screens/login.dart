@@ -18,9 +18,9 @@ class _MyLoginPageState extends State<LoginPage> {
   AuthState? _state;
 
   @override
-  void initState() {
-    super.initState();
-    _state = Provider.of<AuthState>(context, listen: false);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state ??= Provider.of<AuthState>(context, listen: false);
   }
 
   @override
