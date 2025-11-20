@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../network/graphql_client.dart';
 import '../storage/local_storage.dart';
 import '../storage/shared_preferences_storage.dart';
+import '../utils/logger.dart';
 
 final sl = GetIt.instance;
 
@@ -12,6 +13,9 @@ Future<void> initializeDependencies() async {
   // External dependencies
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
+  // Core - Utils
+  sl.registerLazySingleton<AppLogger>(() => AppLogger());
 
   // Core - Storage
   sl.registerLazySingleton<ILocalStorage>(

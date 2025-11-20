@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:unmobile/global/notifiers.dart';
-import 'package:unmobile/global/routes.dart';
-import 'package:unmobile/screens/dashboard.dart';
-import 'package:unmobile/screens/login.dart';
-import 'notifiers/auth_state.dart';
-import 'notifiers/theme_mode.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:unmobile/app/app.dart';
+import 'package:unmobile/core/di/injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+
+  // Initialize dependencies
+  await initializeDependencies();
+
+  runApp(const ProviderScope(child: App()));
 }
 
 class MyApp extends StatelessWidget {
