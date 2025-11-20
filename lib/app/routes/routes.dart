@@ -29,25 +29,25 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.login:
-        return MaterialPageRoute(builder: (_) => const MyLoginPage());
+        return MaterialPageRoute(builder: (_) => const LoginPage());
       case AppRoutes.dashboard:
-        return MaterialPageRoute(builder: (_) => const MyDashboardPage());
+        return MaterialPageRoute(builder: (_) => const DashboardPage());
       case AppRoutes.array:
-        return MaterialPageRoute(builder: (_) => const MyArrayPage());
+        return MaterialPageRoute(builder: (_) => const ArrayPage());
       case AppRoutes.dockers:
-        return MaterialPageRoute(builder: (_) => const MyDockersPage());
+        return MaterialPageRoute(builder: (_) => const DockersPage());
       case AppRoutes.vms:
-        return MaterialPageRoute(builder: (_) => const MyVMsPage());
+        return MaterialPageRoute(builder: (_) => const VmsPage());
       case AppRoutes.shares:
-        return MaterialPageRoute(builder: (_) => const MySharesPage());
+        return MaterialPageRoute(builder: (_) => const SharesPage());
       case AppRoutes.system:
-        return MaterialPageRoute(builder: (_) => const MySystemPage());
+        return MaterialPageRoute(builder: (_) => const SystemPage());
       case AppRoutes.settings:
-        return MaterialPageRoute(builder: (_) => const MySettingsPage());
+        return MaterialPageRoute(builder: (_) => const SettingsPage());
       case AppRoutes.plugins:
-        return MaterialPageRoute(builder: (_) => const MyPluginsPage());
+        return MaterialPageRoute(builder: (_) => const PluginsPage());
       case AppRoutes.notifications:
-        return MaterialPageRoute(builder: (_) => const MyNotificationsPage());
+        return MaterialPageRoute(builder: (_) => const NotificationPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
