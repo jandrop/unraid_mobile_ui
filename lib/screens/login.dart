@@ -25,115 +25,184 @@ class _MyLoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Scaffold(
-        body: Center(
-            child: SingleChildScrollView(
-                child: Column(children: <Widget>[
-      Container(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          height: 150,
-          width: MediaQuery.of(context).size.width,
-          alignment: Alignment.topCenter,
-          child: Image.asset('assets/icon/icon.png')),
-      Container(
-          padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
-          child: TextField(
-            controller: _myServer,
-            decoration: const InputDecoration(
-                labelText: 'Server IP:Port',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.dns)),
-          )),
-      Container(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: TextField(
-            controller: _myToken,
-            decoration: const InputDecoration(
-                labelText: 'API Token',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person)),
-          )),
-      Container(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                    Flexible(
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('http', style: TextStyle(fontSize: 14)),
-                      leading: _protocol == 'http'
-                          ? const Icon(Icons.radio_button_checked)
-                          : const Icon(Icons.radio_button_off),
-                      onTap: () {
-                        setState(() {
-                          _protocol = 'http';
-                        });
-                      },
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                colorScheme.primaryContainer.withAlpha(76),
+                colorScheme.surface,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Hero(
+                          tag: 'app_logo',
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: colorScheme.primary.withAlpha(76),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: Image.asset('assets/icon/icon.png'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Welcome to unConnect',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Connect to your Unraid server',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        TextField(
+                          controller: _myServer,
+                          decoration: InputDecoration(
+                            labelText: 'Server IP:Port',
+                            hintText: '192.168.1.100:8080',
+                            prefixIcon: Icon(Icons.dns, color: colorScheme.primary),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _myToken,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'API Token',
+                            hintText: 'Enter your API token',
+                            prefixIcon: Icon(Icons.key, color: colorScheme.primary),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest.withAlpha(128),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Connection Protocol',
+                                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              _buildProtocolChip('http', 'HTTP'),
+                              _buildProtocolChip('https', 'HTTPS'),
+                              _buildProtocolChip('https_insecure', 'HTTPS (Insecure)'),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            icon: const Icon(Icons.login),
+                            label: const Text('LOGIN'),
+                            onPressed: () => loginUser(),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton.icon(
+                          onPressed: () async => launchUrl(Uri.parse('https://github.com/s3ppo/unraid_mobile_ui')),
+                          icon: const Icon(Icons.help_outline),
+                          label: const Text('Need help?'),
+                        ),
+                      ],
                     ),
-                    ),
-                    Flexible(
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('https', style: TextStyle(fontSize: 14)),
-                      leading: _protocol == 'https'
-                          ? const Icon(Icons.radio_button_checked)
-                          : const Icon(Icons.radio_button_off),
-                      onTap: () {
-                        setState(() {
-                          _protocol = 'https';
-                        });
-                      },
-                    ),
-                    ),
-                    Flexible(
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('https (insecure)', style: TextStyle(fontSize: 14)),
-                      leading: _protocol == 'https_insecure'
-                          ? const Icon(Icons.radio_button_checked)
-                          : const Icon(Icons.radio_button_off),
-                      onTap: () {
-                        setState(() {
-                          _protocol = 'https_insecure';
-                        });
-                      },
-                    ),
-                    ),
-            
-                ],
-              ),
-            ]
-          )),
-      Container(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-          alignment: Alignment.center,
-          child: OutlinedButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: const Size(150, 40),
-                side: BorderSide(
-                    width: 2.0, color: Theme.of(context).primaryColor),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
                 ),
               ),
-              child: const Text('LOGIN',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600, color: Colors.white)),
-              onPressed: () => loginUser())
+            ),
+          ),
+        ));
+  }
 
+  Widget _buildProtocolChip(String value, String label) {
+    final isSelected = _protocol == value;
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _protocol = value;
+          });
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected 
+              ? colorScheme.primaryContainer 
+              : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected 
+                ? colorScheme.primary 
+                : colorScheme.outline.withAlpha(76),
+              width: 2,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+                color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
               ),
-      TextButton(
-          onPressed: () async => launchUrl(Uri.parse('https://github.com/s3ppo/unraid_mobile_ui')),
-          child: const Text('Need help?'),
-        ), 
-    ]))));
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void loginUser() async {
@@ -143,17 +212,47 @@ class _MyLoginPageState extends State<LoginPage> {
           ip: _myServer.value.text,
           prot: _protocol);
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.green,        
-        content: Align( alignment: Alignment.center, child: Text('Login successful')),
-        duration: const Duration(seconds: 3),
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onPrimaryContainer),
+                const SizedBox(width: 12),
+                Text(
+                  'Login successful',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                ),
+              ],
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     } on AuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red,
-        content: Align( alignment: Alignment.center, child: Text(e.msg)),
-        duration: const Duration(seconds: 3),
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+            content: Row(
+              children: [
+                Icon(Icons.error, color: Theme.of(context).colorScheme.onErrorContainer),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    e.msg,
+                    style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  ),
+                ),
+              ],
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 }
