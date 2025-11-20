@@ -97,12 +97,19 @@ class _MyDashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('unConnect'),
+          title: Text(
+            'unConnect',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
-                _theme!.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                _theme!.isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
               ),
+              tooltip: _theme!.isDarkMode ? 'Dark mode' : 'Light mode',
               onPressed: () {
                 setState(() {
                   _theme!.toggleTheme();
@@ -113,7 +120,6 @@ class _MyDashboardPageState extends State<DashboardPage> {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: showNotificationsButton())
           ],
-          elevation: 0,
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -129,18 +135,20 @@ class _MyDashboardPageState extends State<DashboardPage> {
             getUpsCard();
             setState(() {});
           },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
-            child: ListView(
-              children: [
-                const SizedBox(height: 4),
-                showServerCard(),
-                showArrayCard(),
-                showInfoCard(),
-                showParityCard(),
-                showUpsCard()
-              ],
-            ),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              showServerCard(),
+              const SizedBox(height: 16),
+              showArrayCard(),
+              const SizedBox(height: 16),
+              showInfoCard(),
+              const SizedBox(height: 16),
+              showParityCard(),
+              const SizedBox(height: 16),
+              showUpsCard(),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
         drawer: MyDrawer());
@@ -162,110 +170,147 @@ class _MyDashboardPageState extends State<DashboardPage> {
             final server = snapshot.data!.data!['server'];
             final vars = snapshot.data!.data!['vars'];
             final info = snapshot.data!.data!['info'];
+            final colorScheme = Theme.of(context).colorScheme;
 
             return Card(
-                elevation: 2,
-                child: Container(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ExpansionTile(
-                              shape: const Border(),
-                              initiallyExpanded: true,
-                              tilePadding: EdgeInsets.zero,
-                              expandedAlignment: Alignment.centerLeft,
-                              expandedCrossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              leading: faIcon(FontAwesomeIcons.server),
-                              title: Text(server['name'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.1,
-                                    fontSize: 16,
-                                  )),
-                              subtitle: Text('Version: ${vars['version']}'),
-                              children: [
-                                const Divider(),
-                                const SizedBox(height: 6),
-                                Row(
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: FaIcon(
+                                  FontAwesomeIcons.server,
+                                  color: colorScheme.onPrimaryContainer,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      width: 24,
-                                      child: Center(
-                                        child: faIcon(FontAwesomeIcons.plug,
-                                            size: 16),
+                                    Text(
+                                      server['name'],
+                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text('Status: '),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      server['status'],
-                                      style: TextStyle(
-                                        color: server['status'] == 'ONLINE'
-                                            ? Colors.green
-                                            : Colors.red,
-                                        fontWeight: FontWeight.bold,
+                                      'Version ${vars['version']}',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 3),
-                                Row(children: [
-                                  SizedBox(
-                                    width: 24,
-                                    child: Center(
-                                        child: faIcon(FontAwesomeIcons.clock,
-                                            size: 16)),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text('Uptime: '),
-                                  Builder(
-                                    builder: (context) {
-                                      final isoTimestamp = info['os']['uptime'];
-                                      final dateTime =
-                                          DateTime.tryParse(isoTimestamp);
-                                      if (dateTime == null) {
-                                        return Text('Unknown');
-                                      }
-                                      final duration =
-                                          DateTime.now().difference(dateTime);
-                                      String formatted;
-                                      if (duration.inDays > 0) {
-                                        formatted =
-                                            '${duration.inDays} days ${duration.inHours % 24} hours';
-                                      } else if (duration.inHours > 0) {
-                                        formatted =
-                                            '${duration.inHours} hours ${duration.inMinutes % 60} minutes';
-                                      } else {
-                                        formatted =
-                                            '${duration.inMinutes} minutes';
-                                      }
-                                      return Text(formatted);
-                                    },
-                                  ),
-                                ]),
-                                const SizedBox(height: 3),
-                                Row(children: [
-                                  SizedBox(
-                                    width: 24,
-                                    child: Center(
-                                      child: faIcon(
-                                          FontAwesomeIcons.networkWired,
-                                          size: 16),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text('Lan IP: '),
-                                  Text(server['lanip']),
-                                ]),
-                                const SizedBox(height: 8),
-                              ])
+                              ),
+                              _buildStatusChip(server['status']),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Divider(color: colorScheme.outlineVariant),
+                          const SizedBox(height: 16),
+                          _buildInfoRow(
+                            FontAwesomeIcons.clock,
+                            'Uptime',
+                            _formatUptime(info['os']['uptime']),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildInfoRow(
+                            FontAwesomeIcons.networkWired,
+                            'LAN IP',
+                            server['lanip'],
+                          ),
                         ])));
           } else {
             return const SizedBox.shrink();
           }
         });
+  }
+
+  Widget _buildStatusChip(String status) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isOnline = status == 'ONLINE';
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: isOnline 
+          ? colorScheme.tertiaryContainer 
+          : colorScheme.errorContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: isOnline ? colorScheme.tertiary : colorScheme.error,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            status,
+            style: TextStyle(
+              color: isOnline 
+                ? colorScheme.onTertiaryContainer 
+                : colorScheme.onErrorContainer,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: FaIcon(
+              icon,
+              size: 16,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          '$label: ',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget showArrayCard() {
@@ -276,8 +321,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
             return const SizedBox.shrink();
           } else if (snapshot.hasData && snapshot.data!.data != null) {
             final array = snapshot.data!.data!['array'];
+            final colorScheme = Theme.of(context).colorScheme;
 
-            //Total size in TB
             double size = array['capacity']['kilobytes']['total'] != null
                 ? double.tryParse(array['capacity']['kilobytes']['total']
                             .toString()) !=
@@ -290,7 +335,6 @@ class _MyDashboardPageState extends State<DashboardPage> {
                     : 0
                 : 0;
             double sizeTB = double.parse(size.toStringAsFixed(2));
-            //Used size in TB
             double used = array['capacity']['kilobytes']['used'] != null
                 ? double.tryParse(array['capacity']['kilobytes']['used']
                             .toString()) !=
@@ -306,242 +350,249 @@ class _MyDashboardPageState extends State<DashboardPage> {
             double sizeUsedTB = double.parse(used.toStringAsFixed(2));
 
             return Card(
-              elevation: 2,
-              child: Container(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        ExpansionTile(
-                            shape: const Border(),
-                            initiallyExpanded: true,
-                            tilePadding: EdgeInsets.zero,
-                            expandedAlignment: Alignment.centerLeft,
-                            expandedCrossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            leading: faIcon(FontAwesomeIcons.hardDrive),
-                            title: Text('Array',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.1)),
-                            subtitle: Row(
-                              children: [
-                                Text('State: '),
-                                Text('${array['state']}',
-                                    style: TextStyle(
-                                      color: array['state'] == 'STARTED'
-                                          ? Colors.green
-                                          : Colors.red,
-                                    )),
-                              ],
-                            ),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: FaIcon(
+                            FontAwesomeIcons.hardDrive,
+                            color: colorScheme.onSecondaryContainer,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Divider(),
-                              const SizedBox(height: 6),
                               Text(
-                                'Total',
-                                style: TextStyle(
+                                'Array',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Row(children: [
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.70,
-                                    child: LinearProgressIndicator(
-                                        value: fillPercent,
-                                        minHeight: 8,
-                                        backgroundColor: Colors.grey[300],
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          fillPercent > 0.85
-                                              ? Colors.red
-                                              : fillPercent > 0.65
-                                                  ? Colors.orange
-                                                  : Colors.green,
-                                        ))),
-                                Expanded( child: Text(
-                                  '${(fillPercent * 100).toStringAsFixed(1)}%',
-                                  style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.right,
-                                ))
-                              ]),
-                              const SizedBox(height: 2),
-                              Text('$sizeUsedTB TB / $sizeTB TB'),
-                              const SizedBox(height: 8),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _showMoreArrayDetails =
-                                        !_showMoreArrayDetails;
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                              const SizedBox(height: 4),
+                              _buildStatusChip(array['state']),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Storage',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildStorageProgress(
+                      fillPercent,
+                      '$sizeUsedTB TB / $sizeTB TB',
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showMoreArrayDetails = !_showMoreArrayDetails;
+                        });
+                      },
+                      icon: Icon(
+                        _showMoreArrayDetails
+                            ? Icons.expand_less
+                            : Icons.expand_more,
+                      ),
+                      label: Text(_showMoreArrayDetails ? 'Show less' : 'Show details'),
+                    ),
+                    if (_showMoreArrayDetails) ...[
+                      const SizedBox(height: 16),
+                      Divider(color: colorScheme.outlineVariant),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Disks',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ...List.generate(
+                        array['disks'].length,
+                        (index) {
+                          final disk = array['disks'][index];
+                          double total = disk['fsSize'] != null
+                              ? double.tryParse(disk['fsSize'].toString()) ?? 0
+                              : 0;
+                          double used = disk['fsUsed'] != null
+                              ? double.tryParse(disk['fsUsed'].toString()) ?? 0
+                              : 0;
+                          double percent = total > 0 ? (used / total) : 0;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(
-                                      _showMoreArrayDetails
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_down,
-                                      color: Colors.orange,
-                                    ),
-                                    const SizedBox(width: 4),
                                     Text(
-                                      _showMoreArrayDetails ? 'less' : 'more',
-                                      style: TextStyle(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.bold,
+                                      disk['name'] ?? 'Unknown',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${(used / 1024 / 1024 / 1024).toStringAsFixed(1)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(1)} TB',
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              if (_showMoreArrayDetails) ...[
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Disks',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                const SizedBox(height: 6),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: LinearProgressIndicator(
+                                    value: percent,
+                                    minHeight: 8,
+                                    backgroundColor: colorScheme.surfaceContainerHighest,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      _getProgressColor(percent),
+                                    ),
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        children: List.generate(
-                                          array['disks'].length,
-                                          (index) {
-                                            final disk = array['disks'][index];
-                                            double total = disk['fsSize'] !=
-                                                    null
-                                                ? double.tryParse(disk['fsSize']
-                                                        .toString()) ??
-                                                    0
-                                                : 0;
-                                            double used = disk['fsUsed'] != null
-                                                ? double.tryParse(disk['fsUsed']
-                                                        .toString()) ??
-                                                    0
-                                                : 0;
-                                            double percent =
-                                                total > 0 ? (used / total) : 0;
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4.0),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    disk['name'] ?? 'Unknown',
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child:
-                                                        LinearProgressIndicator(
-                                                      value: percent,
-                                                      minHeight: 8,
-                                                      backgroundColor:
-                                                          Colors.grey[300],
-                                                      valueColor:
-                                                          AlwaysStoppedAnimation<
-                                                              Color>(
-                                                        percent > 0.85
-                                                            ? Colors.red
-                                                            : percent > 0.65
-                                                                ? Colors.orange
-                                                                : Colors.green,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    '${(used / 1024 / 1024 / 1024).toStringAsFixed(2)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(2)} TB',
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      if (array['caches'].isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          'Caches',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ...List.generate(
+                          array['caches'].length,
+                          (index) {
+                            final cache = array['caches'][index];
+                            double total = cache['fsSize'] != null
+                                ? double.tryParse(cache['fsSize'].toString()) ?? 0
+                                : 0;
+                            double used = cache['fsUsed'] != null
+                                ? double.tryParse(cache['fsUsed'].toString()) ?? 0
+                                : 0;
+                            double percent = total > 0 ? (used / total) : 0;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        cache['name'] ?? 'Unknown',
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Caches',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                      Text(
+                                        '${(used / 1024 / 1024 / 1024).toStringAsFixed(1)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(1)} TB',
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Column(
-                                            children: List.generate(
-                                      array['caches'].length,
-                                      (index) {
-                                        final cache = array['caches'][index];
-                                        double total = cache['fsSize'] != null
-                                            ? double.tryParse(cache['fsSize']
-                                                    .toString()) ??
-                                                0
-                                            : 0;
-                                        double used = cache['fsUsed'] != null
-                                            ? double.tryParse(cache['fsUsed']
-                                                    .toString()) ??
-                                                0
-                                            : 0;
-                                        double percent =
-                                            total > 0 ? (used / total) : 0;
-                                        return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4.0),
-                                            child: Row(children: [
-                                              Text(
-                                                cache['name'] ?? 'Unknown',
-                                                style: const TextStyle(
-                                                    fontSize: 12),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Expanded(
-                                                child: LinearProgressIndicator(
-                                                  value: percent,
-                                                  minHeight: 8,
-                                                  backgroundColor:
-                                                      Colors.grey[300],
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    percent > 0.85
-                                                        ? Colors.red
-                                                        : percent > 0.65
-                                                            ? Colors.orange
-                                                            : Colors.green,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                '${(used / 1024 / 1024 / 1024).toStringAsFixed(2)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(2)} TB',
-                                                style: const TextStyle(
-                                                    fontSize: 12),
-                                              ),
-                                            ]));
-                                      },
-                                    ))),
-                                  ],
-                                )
-                              ],
-                              const SizedBox(height: 8),
-                            ]),
-                      ])),
+                                  const SizedBox(height: 6),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: LinearProgressIndicator(
+                                      value: percent,
+                                      minHeight: 8,
+                                      backgroundColor: colorScheme.surfaceContainerHighest,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        _getProgressColor(percent),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ],
+                ),
+              ),
             );
           } else {
             return const SizedBox.shrink();
           }
         });
+  }
+
+  Widget _buildStorageProgress(double percent, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              '${(percent * 100).toStringAsFixed(1)}%',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: _getProgressColor(percent),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: LinearProgressIndicator(
+            value: percent,
+            minHeight: 12,
+            backgroundColor: colorScheme.surfaceContainerHighest,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _getProgressColor(percent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getProgressColor(double percent) {
+    final colorScheme = Theme.of(context).colorScheme;
+    if (percent > 0.85) {
+      return colorScheme.error;
+    } else if (percent > 0.65) {
+      return Colors.orange;
+    } else {
+      return colorScheme.tertiary;
+    }
   }
 
   Widget showInfoCard() {
@@ -553,169 +604,139 @@ class _MyDashboardPageState extends State<DashboardPage> {
           } else if (snapshot.hasData && snapshot.data!.data != null) {
             final info = snapshot.data!.data!['info'];
             final metrics = snapshot.data!.data!['metrics'];
+            final colorScheme = Theme.of(context).colorScheme;
+
+            double totalMem = double.tryParse(
+                        metrics['memory']['total'].toString())
+                    ?.roundToDouble() ??
+                0;
+            double totalGB =
+                (totalMem / 1024 / 1024 / 1024).roundToDouble();
+            double available = double.tryParse(
+                        metrics['memory']['available'].toString())
+                    ?.roundToDouble() ??
+                0;
+            double used = (totalMem - available).roundToDouble();
+            double usedGB =
+                (used / 1024 / 1024 / 1024).roundToDouble();
+            double memPercent = totalMem > 0 ? used / totalMem : 0;
 
             return Card(
-                elevation: 2,
-                child: Container(
-                    padding: const EdgeInsets.only(left: 8, right: 8),
-                    child: ExpansionTile(
-                        expandedAlignment: Alignment.centerLeft,
-                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                        shape: const Border(),
-                        initiallyExpanded: true,
-                        tilePadding: EdgeInsets.zero,
-                        leading: faIcon(FontAwesomeIcons.microchip),
-                        title: Text('System',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.1)),
-                        subtitle: Text('Infos'),
+                child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Divider(),
-                          const SizedBox(height: 6),
-                          Text(
-                            'CPU: ${info['cpu']['manufacturer']}, ${info['cpu']['brand']}',
-                            textAlign: TextAlign.left,
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.tertiaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: FaIcon(
+                                  FontAwesomeIcons.microchip,
+                                  color: colorScheme.onTertiaryContainer,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  'System',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 20),
                           Text(
-                              'Cores: ${info['cpu']['cores']}, Threads: ${info['cpu']['threads']}'),
-                          Text('Load: '),
+                            'CPU',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${info['cpu']['manufacturer']} ${info['cpu']['brand']}',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${info['cpu']['cores']} Cores • ${info['cpu']['threads']} Threads',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                           StreamBuilder<QueryResult>(
                             stream: _cpuMetricsSubscription,
                             builder: (context, cpuSnapshot) {
+                              double percent = 0;
                               if (cpuSnapshot.hasData &&
                                   cpuSnapshot.data!.data != null &&
                                   cpuSnapshot.data!.data!['systemMetricsCpu'] !=
                                       null) {
                                 final cpuMetrics =
                                     cpuSnapshot.data!.data!['systemMetricsCpu'];
-                                final percentTotal = cpuMetrics['percentTotal'];
-                                double percent =
-                                    double.tryParse(percentTotal.toString()) ??
-                                        0;
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.70,
-                                      child: LinearProgressIndicator(
-                                        value: percent / 100,
-                                        minHeight: 8,
-                                        backgroundColor: Colors.grey[300],
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          percent > 85
-                                              ? Colors.red
-                                              : percent > 65
-                                                  ? Colors.orange
-                                                  : Colors.green,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                        child: Text(
-                                            '${percent.toStringAsFixed(2)}%',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.right))
-                                  ],
-                                );
+                                percent =
+                                    double.tryParse(cpuMetrics['percentTotal'].toString()) ?? 0;
                               } else {
-                                final percentTotal =
-                                    metrics['cpu']['percentTotal'];
-                                double percent =
-                                    double.tryParse(percentTotal.toString()) ??
-                                        0;
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.70,
-                                        child: LinearProgressIndicator(
-                                          value: percent / 100,
-                                          minHeight: 8,
-                                          backgroundColor: Colors.grey[300],
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            percent > 85
-                                                ? Colors.red
-                                                : percent > 65
-                                                    ? Colors.orange
-                                                    : Colors.green,
-                                          ),
-                                        )),
-                                    Expanded(
-                                      child: Text(
-                                        '${percent.toStringAsFixed(2)}%',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ),
-                                  ],
-                                );
+                                percent =
+                                    double.tryParse(metrics['cpu']['percentTotal'].toString()) ?? 0;
                               }
+                              return _buildStorageProgress(
+                                percent / 100,
+                                'CPU Load',
+                              );
                             },
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 20),
+                          Divider(color: colorScheme.outlineVariant),
+                          const SizedBox(height: 20),
                           Text(
-                              'Baseboard: ${info['baseboard']['manufacturer']}, ${info['baseboard']['model']}'),
-                          const SizedBox(height: 8),
-                          Divider(),
-                          Text('Memory',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              )),
-                          Builder(builder: (context) {
-                            double total = double.tryParse(
-                                        metrics['memory']['total'].toString())
-                                    ?.roundToDouble() ??
-                                0;
-                            double totalGB =
-                                (total / 1024 / 1024 / 1024).roundToDouble();
-                            double available = double.tryParse(metrics['memory']
-                                            ['available']
-                                        .toString())
-                                    ?.roundToDouble() ??
-                                0;
-                            double used = (total - available).roundToDouble();
-                            double usedGB =
-                                (used / 1024 / 1024 / 1024).roundToDouble();
-                            double percent = total > 0 ? used / total : 0;
-
-                            return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(children: [
-                                    SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.70,
-                                      child: LinearProgressIndicator(
-                                          value: percent,
-                                          minHeight: 8,
-                                          backgroundColor: Colors.grey[300],
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              percent > 0.85
-                                                  ? Colors.red
-                                                  : percent > 0.65
-                                                      ? Colors.orange
-                                                      : Colors.green,
-                                            ))),
-                                    Expanded(
-                                      child: Text(
-                                        '${(percent * 100).toStringAsFixed(1)}%',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.right,
-                                      ),
+                            'Memory',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildStorageProgress(
+                            memPercent,
+                            '$usedGB GB / $totalGB GB',
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest.withAlpha(128),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.memory,
+                                  size: 20,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    '${info['baseboard']['manufacturer']} ${info['baseboard']['model']}',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
                                     ),
-                                  ]),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '$usedGB GB / $totalGB GB',
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ]);
-                          }),
-                          const SizedBox(height: 8),
+                                ),
+                              ],
+                            ),
+                          ),
                         ])));
           } else {
             return const SizedBox.shrink();
@@ -736,125 +757,134 @@ class _MyDashboardPageState extends State<DashboardPage> {
             if (parityHistory == null) {
               return const SizedBox.shrink();
             }
+            final colorScheme = Theme.of(context).colorScheme;
+            final isOk = parityHistory['status'] == 'OK' ||
+                parityHistory['status'] == 'COMPLETED';
+            
             return Card(
-              elevation: 2,
-              child: Container(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: ExpansionTile(
-                      expandedAlignment: Alignment.centerLeft,
-                      expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                      shape: const Border(),
-                      initiallyExpanded: false,
-                      tilePadding: EdgeInsets.zero,
-                      leading: faIcon(FontAwesomeIcons.heartPulse),
-                      title: Text('Parity',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
-                          )),
-                      subtitle: Row(children: [
-                        Text('Status: '),
-                        Text('${parityHistory['status']}',
-                            style: TextStyle(
-                              color: parityHistory['status'] == 'OK' ||
-                                      parityHistory['status'] == 'COMPLETED'
-                                  ? Colors.green
-                                  : Colors.red,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ]),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Divider(),
-                        const SizedBox(height: 6),
-                        Row(children: [
-                          SizedBox(
-                            width: 24,
-                            child: Center(
-                                child: faIcon(FontAwesomeIcons.calendar,
-                                    size: 16)),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isOk 
+                              ? colorScheme.tertiaryContainer 
+                              : colorScheme.errorContainer,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(width: 8),
-                          Text('Last check: '),
-                          Builder(
-                            builder: (context) {
-                              final isoTimestamp = parityHistory?['date'];
-                              final dateTime = DateTime.tryParse(isoTimestamp);
-                              if (dateTime == null) {
-                                return Text('Unknown');
-                              }
-                              final formattedDate =
-                                  '${dateTime.day.toString().padLeft(2, '0')}.${dateTime.month.toString().padLeft(2, '0')}.${dateTime.year} - '
-                                  '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-                              return Text(formattedDate);
-                            },
-                          )
-                        ]),
-                        const SizedBox(height: 3),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              child: Center(
-                                  child:
-                                      faIcon(FontAwesomeIcons.clock, size: 16)),
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Duration: '),
-                            Builder(
-                              builder: (context) {
-                                final duration = Duration(
-                                    seconds: parityHistory?['duration']);
-                                return Text(duration.inHours > 0
-                                    ? '${duration.inHours}h ${duration.inMinutes % 60}m'
-                                    : '${duration.inMinutes}m ${duration.inSeconds % 60}s');
-                              },
-                            )
-                          ],
+                          child: FaIcon(
+                            FontAwesomeIcons.heartPulse,
+                            color: isOk 
+                              ? colorScheme.onTertiaryContainer 
+                              : colorScheme.onErrorContainer,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(height: 3),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              child: Center(
-                                  child: faIcon(
-                                      FontAwesomeIcons.triangleExclamation,
-                                      size: 16)),
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Errors: '),
-                            Text(parityHistory?['errors'].toString() ?? '0')
-                          ],
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Parity',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              _buildStatusChip(parityHistory['status']),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 3),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              child: Center(
-                                  child: faIcon(FontAwesomeIcons.gaugeHigh,
-                                      size: 16)),
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Speed: '),
-                            Text(
-                              (double.tryParse(
-                                          parityHistory?['speed']?.toString() ??
-                                              '0')! /
-                                      1024 /
-                                      1024)
-                                  .toStringAsFixed(2),
-                            ),
-                            Text(' MB/s')
-                          ],
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Divider(color: colorScheme.outlineVariant),
+                    const SizedBox(height: 16),
+                    _buildInfoRow(
+                      FontAwesomeIcons.calendar,
+                      'Last check',
+                      _formatDate(parityHistory?['date']),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildInfoRow(
+                      FontAwesomeIcons.clock,
+                      'Duration',
+                      _formatDuration(parityHistory?['duration']),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMetricChip(
+                            FontAwesomeIcons.triangleExclamation,
+                            'Errors',
+                            parityHistory?['errors'].toString() ?? '0',
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                      ])),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildMetricChip(
+                            FontAwesomeIcons.gaugeHigh,
+                            'Speed',
+                            '${((double.tryParse(parityHistory?['speed']?.toString() ?? '0') ?? 0) / 1024 / 1024).toStringAsFixed(1)} MB/s',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             );
           } else {
             return const SizedBox.shrink();
           }
         });
+  }
+
+  Widget _buildMetricChip(IconData icon, String label, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withAlpha(128),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              FaIcon(
+                icon,
+                size: 14,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget showUpsCard() {
@@ -868,116 +898,184 @@ class _MyDashboardPageState extends State<DashboardPage> {
             if (upsDevices.isEmpty) {
               return const SizedBox.shrink();
             }
+            final colorScheme = Theme.of(context).colorScheme;
+            
             return Card(
-                elevation: 2,
-                child: Container(
-                    padding: const EdgeInsets.all(8),
-                    child: ExpansionTile(
-                        expandedAlignment: Alignment.centerLeft,
-                        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                        shape: const Border(),
-                        initiallyExpanded: false,
-                        tilePadding: EdgeInsets.zero,
-                        leading: faIcon(FontAwesomeIcons.batteryThreeQuarters),
-                        title: Text('UPS',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.1)),
-                        subtitle: Text('Devices'),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: FaIcon(
+                            FontAwesomeIcons.batteryThreeQuarters,
+                            color: colorScheme.onPrimaryContainer,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            'UPS Devices',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    ...List.generate(upsDevices.length, (index) {
+                      final device = upsDevices[index];
+                      final battery = device['battery'];
+                      final power = device['power'];
+                      
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(upsDevices.length, (index) {
-                              final device = upsDevices[index];
-                              final battery = device['battery'];
-                              final power = device['power'];
-                              return Builder(
-                                builder: (context) => Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          if (index > 0) ...[
+                            const SizedBox(height: 16),
+                            Divider(color: colorScheme.outlineVariant),
+                            const SizedBox(height: 16),
+                          ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                device['name'] ?? device['model'] ?? 'Unknown Model',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              _buildStatusChip(device['status'] ?? 'Unknown'),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildMetricChip(
+                                  FontAwesomeIcons.batteryFull,
+                                  'Battery',
+                                  '${battery?['chargeLevel'] ?? '-'}%',
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildMetricChip(
+                                  FontAwesomeIcons.heartPulse,
+                                  'Health',
+                                  battery?['health'] ?? '-',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest.withAlpha(128),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
                                   children: [
-                                    if (index > 0) ...[
-                                      const SizedBox(height: 4),
-                                    ],
-                                    Text(
-                                      device['name'] ??
-                                          device['model'] ??
-                                          'Unknown Model',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                                    FaIcon(
+                                      FontAwesomeIcons.arrowDown,
+                                      size: 14,
+                                      color: colorScheme.onSurfaceVariant,
                                     ),
                                     const SizedBox(height: 4),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 24,
-                                          child: Center(
-                                              child: faIcon(
-                                                  FontAwesomeIcons.plug,
-                                                  size: 16)),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('Status: '),
-                                        Text(
-                                          device['status'] ?? 'Unknown',
-                                          style: TextStyle(
-                                            color: device['status'] == 'Online'
-                                                ? Colors.green
-                                                : Colors.red,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                    Text(
+                                      'In',
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
                                     ),
-                                    const SizedBox(height: 3),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 24,
-                                          child: Center(
-                                              child: faIcon(
-                                                  FontAwesomeIcons.batteryFull,
-                                                  size: 16)),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('Battery: '),
-                                        Text(
-                                            '${battery?['chargeLevel'] ?? '-'}%'),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                            'Health: ${battery?['health'] ?? '-'}'),
-                                      ],
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '${power?['inputVoltage'] ?? '-'} V',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                    const SizedBox(height: 3),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 24,
-                                          child: Center(
-                                              child: faIcon(
-                                                  FontAwesomeIcons.bolt,
-                                                  size: 16)),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('Voltage '),
-                                        Text(
-                                            'In: ${power?['inputVoltage'] ?? '-'} V'),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                            'Out: ${power?['outputVoltage'] ?? '-'} V'),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                            'Load: ${power?['loadPercentage'] ?? '-'}%'),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 3),
                                   ],
                                 ),
-                              );
-                            }),
+                                Container(
+                                  width: 1,
+                                  height: 40,
+                                  color: colorScheme.outlineVariant,
+                                ),
+                                Column(
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.arrowUp,
+                                      size: 14,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Out',
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '${power?['outputVoltage'] ?? '-'} V',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 40,
+                                  color: colorScheme.outlineVariant,
+                                ),
+                                Column(
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.gauge,
+                                      size: 14,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Load',
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '${power?['loadPercentage'] ?? '-'}%',
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 8),
-                        ])));
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            );
           } else {
             return const SizedBox.shrink();
           }
@@ -990,7 +1088,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return IconButton(
-                icon: const Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications_outlined),
                 onPressed: () => navigateNotifications());
           } else if (snapshot.hasData && snapshot.data!.data != null) {
             final result = snapshot.data!;
@@ -999,20 +1097,54 @@ class _MyDashboardPageState extends State<DashboardPage> {
 
             return IconButton(
                 onPressed: () => navigateNotifications(),
-                icon: unreadTotalCount > 0
-                    ? Badge(
-                        smallSize: 10,
-                        largeSize: 10,
-                        backgroundColor: Colors.green,
-                        child: Icon(Icons.notifications),
-                      )
-                    : Icon(Icons.notifications));
+                icon: Badge(
+                  isLabelVisible: unreadTotalCount > 0,
+                  label: Text(unreadTotalCount.toString()),
+                  child: Icon(
+                    unreadTotalCount > 0 
+                      ? Icons.notifications_active 
+                      : Icons.notifications_outlined,
+                  ),
+                ));
           } else {
             return IconButton(
-                icon: const Icon(Icons.notifications),
+                icon: const Icon(Icons.notifications_outlined),
                 onPressed: () => getNotifications());
           }
         });
+  }
+
+  String _formatUptime(String? isoTimestamp) {
+    final dateTime = DateTime.tryParse(isoTimestamp ?? '');
+    if (dateTime == null) {
+      return 'Unknown';
+    }
+    final duration = DateTime.now().difference(dateTime);
+    if (duration.inDays > 0) {
+      return '${duration.inDays}d ${duration.inHours % 24}h';
+    } else if (duration.inHours > 0) {
+      return '${duration.inHours}h ${duration.inMinutes % 60}m';
+    } else {
+      return '${duration.inMinutes}m';
+    }
+  }
+
+  String _formatDate(String? isoTimestamp) {
+    final dateTime = DateTime.tryParse(isoTimestamp ?? '');
+    if (dateTime == null) {
+      return 'Unknown';
+    }
+    return '${dateTime.day.toString().padLeft(2, '0')}.${dateTime.month.toString().padLeft(2, '0')}.${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDuration(int? seconds) {
+    if (seconds == null) return 'Unknown';
+    final duration = Duration(seconds: seconds);
+    if (duration.inHours > 0) {
+      return '${duration.inHours}h ${duration.inMinutes % 60}m';
+    } else {
+      return '${duration.inMinutes}m ${duration.inSeconds % 60}s';
+    }
   }
 
   Widget faIcon(IconData icon, {double? size}) {
