@@ -1,0 +1,13 @@
+import 'package:dartz/dartz.dart';
+import 'package:unmobile/core/error/failures.dart';
+import 'package:unmobile/features/auth/domain/repositories/auth_repository.dart';
+
+class IsAuthenticated {
+  final AuthRepository repository;
+
+  IsAuthenticated(this.repository);
+
+  Future<Either<Failure, bool>> call() async {
+    return await repository.isAuthenticated();
+  }
+}
