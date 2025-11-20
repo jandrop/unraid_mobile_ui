@@ -20,11 +20,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract Flutter version from pubspec.yaml
-        id: flutter_version
+        id: extract_flutter_version
         run: |
-          FLUTTER_VERSION=$(grep 'flutter: ' pubspec.yaml | sed 's/.*"\(.*\)"/\1/')
-          echo "version=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
-          echo "Using Flutter version: $FLUTTER_VERSION"
+          flutter_version=$(grep '  flutter:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          echo "FLUTTER_VERSION=$flutter_version" >> $GITHUB_ENV
+          echo "Flutter version detected: $flutter_version"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -35,7 +35,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ steps.flutter_version.outputs.version }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
           cache: true
 
@@ -64,11 +64,11 @@ jobs:
           fetch-depth: 0
 
       - name: Extract Flutter version from pubspec.yaml
-        id: flutter_version
+        id: extract_flutter_version
         run: |
-          FLUTTER_VERSION=$(grep 'flutter: ' pubspec.yaml | sed 's/.*"\(.*\)"/\1/')
-          echo "version=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
-          echo "Using Flutter version: $FLUTTER_VERSION"
+          flutter_version=$(grep '  flutter:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          echo "FLUTTER_VERSION=$flutter_version" >> $GITHUB_ENV
+          echo "Flutter version detected: $flutter_version"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -79,7 +79,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ steps.flutter_version.outputs.version }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
           cache: true
 
@@ -161,7 +161,7 @@ jobs:
           \`\`\`
           
           ---
-          Built with Flutter ${{ steps.flutter_version.outputs.version }} | Material Design 3
+          Built with Flutter ${{ env.FLUTTER_VERSION }} | Material Design 3
           EOF
           
           cat release_notes.md
