@@ -73,7 +73,7 @@ class Mutations {
         reset(id: $vmId)
       }
     }
-  ''';  
+  ''';
 
   static const String setArrayState = r'''
     mutation SetState($input: ArrayStateInput!) {
@@ -116,5 +116,4 @@ class Mutations {
       }
     }
   ''';
-
 }

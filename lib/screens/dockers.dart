@@ -22,7 +22,7 @@ class _MyDockersPageState extends State<DockersPage> {
   void initState() {
     super.initState();
     _state = Provider.of<AuthState>(context, listen: false);
-    if(_state!.client != null) {
+    if (_state!.client != null) {
       _state!.client!.resetStore();
       getAllDockers();
     }
@@ -79,13 +79,14 @@ class _MyDockersPageState extends State<DockersPage> {
           } else if (snapshot.hasData && snapshot.data!.data != null) {
             final result = snapshot.data!;
             final containers = result.data!['docker']['containers'];
-            
+
             if (containers.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FaIcon(FontAwesomeIcons.docker, size: 64, color: Theme.of(context).colorScheme.outline),
+                    FaIcon(FontAwesomeIcons.docker,
+                        size: 64, color: Theme.of(context).colorScheme.outline),
                     const SizedBox(height: 16),
                     Text(
                       'No containers found',
@@ -115,7 +116,8 @@ class _MyDockersPageState extends State<DockersPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FaIcon(FontAwesomeIcons.docker, size: 64, color: Theme.of(context).colorScheme.outline),
+                  FaIcon(FontAwesomeIcons.docker,
+                      size: 64, color: Theme.of(context).colorScheme.outline),
                   const SizedBox(height: 16),
                   Text('No data available'),
                 ],
@@ -127,8 +129,8 @@ class _MyDockersPageState extends State<DockersPage> {
 
   Widget _buildDockerCard(Map docker, String name, bool running) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isHealthy = docker['status'] != null && 
-                      docker['status'].toString().contains('healthy');
+    final isHealthy = docker['status'] != null &&
+        docker['status'].toString().contains('healthy');
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -147,34 +149,35 @@ class _MyDockersPageState extends State<DockersPage> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: running 
-                        ? colorScheme.primaryContainer 
-                        : colorScheme.surfaceContainerHighest,
+                      color: running
+                          ? colorScheme.primaryContainer
+                          : colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: docker['labels']['net.unraid.docker.icon'] != null &&
-                              docker['labels']['net.unraid.docker.icon']
-                                  .toString()
-                                  .startsWith('http')
-                          ? Image.network(
-                              docker['labels']['net.unraid.docker.icon'],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Center(
+                      child:
+                          docker['labels']['net.unraid.docker.icon'] != null &&
+                                  docker['labels']['net.unraid.docker.icon']
+                                      .toString()
+                                      .startsWith('http')
+                              ? Image.network(
+                                  docker['labels']['net.unraid.docker.icon'],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Center(
                                     child: FaIcon(
                                       FontAwesomeIcons.docker,
                                       color: colorScheme.onSurfaceVariant,
                                     ),
                                   ),
-                            )
-                          : Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.docker,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
+                                )
+                              : Center(
+                                  child: FaIcon(
+                                    FontAwesomeIcons.docker,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -185,9 +188,10 @@ class _MyDockersPageState extends State<DockersPage> {
                       children: [
                         Text(
                           name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
@@ -197,7 +201,8 @@ class _MyDockersPageState extends State<DockersPage> {
                             if (isHealthy) ...[
                               const SizedBox(width: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: colorScheme.tertiaryContainer,
                                   borderRadius: BorderRadius.circular(8),
@@ -255,8 +260,8 @@ class _MyDockersPageState extends State<DockersPage> {
                       child: Text(
                         docker['image'],
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                              color: colorScheme.onSurfaceVariant,
+                            ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -272,13 +277,12 @@ class _MyDockersPageState extends State<DockersPage> {
 
   Widget _buildStatusChip(bool running, bool isHealthy) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: running 
-          ? colorScheme.primaryContainer 
-          : colorScheme.errorContainer,
+        color:
+            running ? colorScheme.primaryContainer : colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -296,9 +300,9 @@ class _MyDockersPageState extends State<DockersPage> {
           Text(
             running ? 'Running' : 'Stopped',
             style: TextStyle(
-              color: running 
-                ? colorScheme.onPrimaryContainer 
-                : colorScheme.onErrorContainer,
+              color: running
+                  ? colorScheme.onPrimaryContainer
+                  : colorScheme.onErrorContainer,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
@@ -336,7 +340,7 @@ class _MyDockersPageState extends State<DockersPage> {
 
   Future<void> _toggleDocker(Map docker, bool running) async {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -350,7 +354,9 @@ class _MyDockersPageState extends State<DockersPage> {
                 children: [
                   CircularProgressIndicator(),
                   const SizedBox(height: 16),
-                  Text(running ? 'Stopping container...' : 'Starting container...'),
+                  Text(running
+                      ? 'Stopping container...'
+                      : 'Starting container...'),
                 ],
               ),
             ),
@@ -382,11 +388,11 @@ class _MyDockersPageState extends State<DockersPage> {
             }));
         docker['state'] = result.data!['docker']['start']['state'];
       }
-      
+
       Navigator.of(context).pop();
-      
+
       setState(() {});
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -406,7 +412,7 @@ class _MyDockersPageState extends State<DockersPage> {
       );
     } catch (e) {
       Navigator.of(context).pop();
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,

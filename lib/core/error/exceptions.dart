@@ -24,19 +24,22 @@ class NetworkException extends AppException {
 
 /// Exception for authentication errors (401)
 class AuthenticationException extends AppException {
-  const AuthenticationException([String message = 'Authentication failed', int? statusCode])
+  const AuthenticationException(
+      [String message = 'Authentication failed', int? statusCode])
       : super(message, statusCode);
 }
 
 /// Exception for authorization errors (403)
 class AuthorizationException extends AppException {
-  const AuthorizationException([String message = 'Access forbidden', int? statusCode])
+  const AuthorizationException(
+      [String message = 'Access forbidden', int? statusCode])
       : super(message, statusCode);
 }
 
 /// Exception for not found errors (404)
 class NotFoundException extends AppException {
-  const NotFoundException([String message = 'Resource not found', int? statusCode])
+  const NotFoundException(
+      [String message = 'Resource not found', int? statusCode])
       : super(message, statusCode);
 }
 
@@ -48,14 +51,12 @@ class ValidationException extends AppException {
 
 /// Exception for timeout errors
 class TimeoutException extends AppException {
-  const TimeoutException([String message = 'Request timeout'])
-      : super(message);
+  const TimeoutException([String message = 'Request timeout']) : super(message);
 }
 
 /// Exception for cache operations
 class CacheException extends AppException {
-  const CacheException([String message = 'Cache error'])
-      : super(message);
+  const CacheException([String message = 'Cache error']) : super(message);
 }
 
 /// Exception for parsing/serialization errors

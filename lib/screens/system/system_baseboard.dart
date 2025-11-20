@@ -9,7 +9,6 @@ class BaseboardPage extends StatefulWidget {
 }
 
 class _MyBaseboardPageState extends State<BaseboardPage> {
-
   @override
   void initState() {
     super.initState();
@@ -20,8 +19,7 @@ class _MyBaseboardPageState extends State<BaseboardPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Baseboard'),
-          actions: <Widget>[
-          ],
+          actions: <Widget>[],
           elevation: 0,
         ),
         body: Container(child: showListContent()));

@@ -103,9 +103,9 @@ class _MyDrawerState extends State<MyDrawer> {
               Text(
                 state.userData?["name"] ?? 'Unknown User',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onPrimaryContainer,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -117,14 +117,14 @@ class _MyDrawerState extends State<MyDrawer> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  (state.userData?["roles"] is List && 
-                      (state.userData?["roles"]?.isNotEmpty ?? false))
+                  (state.userData?["roles"] is List &&
+                          (state.userData?["roles"]?.isNotEmpty ?? false))
                       ? state.userData!["roles"][0]
                       : "No Role",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -138,7 +138,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 }
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: colorScheme.surface.withAlpha(230),
                     borderRadius: BorderRadius.circular(12),
@@ -148,10 +149,11 @@ class _MyDrawerState extends State<MyDrawer> {
                     isDense: true,
                     value: _selectedServer,
                     dropdownColor: colorScheme.surface,
-                    icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurface),
+                    icon: Icon(Icons.arrow_drop_down,
+                        color: colorScheme.onSurface),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
+                          color: colorScheme.onSurface,
+                        ),
                     underline: Container(height: 0),
                     items: [
                       for (var server in servers)
@@ -169,14 +171,16 @@ class _MyDrawerState extends State<MyDrawer> {
                         try {
                           await state.switchMultiserver(newValue);
                           _selectedServer = newValue;
-                          Navigator.of(context).pushReplacementNamed(Routes.dashboard);
+                          Navigator.of(context)
+                              .pushReplacementNamed(Routes.dashboard);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: colorScheme.primaryContainer,
                               content: Text(
                                 'Server switched to $newValue',
-                                style: TextStyle(color: colorScheme.onPrimaryContainer),
+                                style: TextStyle(
+                                    color: colorScheme.onPrimaryContainer),
                               ),
                               duration: const Duration(seconds: 3),
                             ),
@@ -189,7 +193,8 @@ class _MyDrawerState extends State<MyDrawer> {
                               backgroundColor: colorScheme.errorContainer,
                               content: Text(
                                 e.msg,
-                                style: TextStyle(color: colorScheme.onErrorContainer),
+                                style: TextStyle(
+                                    color: colorScheme.onErrorContainer),
                               ),
                               duration: const Duration(seconds: 3),
                             ),
@@ -201,7 +206,8 @@ class _MyDrawerState extends State<MyDrawer> {
                               backgroundColor: colorScheme.errorContainer,
                               content: Text(
                                 'Failed to switch server',
-                                style: TextStyle(color: colorScheme.onErrorContainer),
+                                style: TextStyle(
+                                    color: colorScheme.onErrorContainer),
                               ),
                               duration: const Duration(seconds: 3),
                             ),
@@ -288,7 +294,7 @@ class _MyDrawerState extends State<MyDrawer> {
         setState(() {
           _selectedIndex = index;
         });
-        
+
         switch (index) {
           case 0:
             Navigator.of(context).pushReplacementNamed(Routes.dashboard);

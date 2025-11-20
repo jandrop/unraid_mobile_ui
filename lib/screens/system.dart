@@ -20,7 +20,7 @@ class _MySystemPageState extends State<SystemPage> {
   void initState() {
     super.initState();
     _state = Provider.of<AuthState>(context, listen: false);
-    if(_state!.client != null) {
+    if (_state!.client != null) {
       _state!.client!.resetStore();
       getInfo();
     }
@@ -39,8 +39,7 @@ class _MySystemPageState extends State<SystemPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('System'),
-          actions: <Widget>[
-          ],
+          actions: <Widget>[],
           elevation: 0,
         ),
         body: Container(child: showSystemContent()));

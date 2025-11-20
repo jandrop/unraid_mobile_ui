@@ -50,29 +50,33 @@ class _MyArrayPageState extends State<ArrayPage> {
             showModalBottomSheet(
               context: context,
               builder: (BuildContext context) {
-                return SizedBox(height: 160, child: Wrap(
-                  children: [
-                    SizedBox( height: 40, child: ListTile(
-                      title: Text('Array Operation'),
-                    )),
-                    ListTile(
-                      leading: const Icon(Icons.play_arrow),
-                      title: const Text('Start'),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        doSetArrayState('START');
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.stop),
-                      title: const Text('Stop'),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        doSetArrayState('STOP');
-                      },
-                    )
-                  ],
-                ));
+                return SizedBox(
+                    height: 160,
+                    child: Wrap(
+                      children: [
+                        SizedBox(
+                            height: 40,
+                            child: ListTile(
+                              title: Text('Array Operation'),
+                            )),
+                        ListTile(
+                          leading: const Icon(Icons.play_arrow),
+                          title: const Text('Start'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            doSetArrayState('START');
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.stop),
+                          title: const Text('Stop'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            doSetArrayState('STOP');
+                          },
+                        )
+                      ],
+                    ));
               },
             );
           },

@@ -13,32 +13,38 @@ abstract class Failure extends Equatable {
 
 /// Failure for server-related errors
 class ServerFailure extends Failure {
-  const ServerFailure([String message = 'Server error occurred']) : super(message);
+  const ServerFailure([String message = 'Server error occurred'])
+      : super(message);
 }
 
 /// Failure for network connectivity issues
 class NetworkFailure extends Failure {
-  const NetworkFailure([String message = 'Network connection failed']) : super(message);
+  const NetworkFailure([String message = 'Network connection failed'])
+      : super(message);
 }
 
 /// Failure for authentication/authorization errors
 class AuthenticationFailure extends Failure {
-  const AuthenticationFailure([String message = 'Authentication failed']) : super(message);
+  const AuthenticationFailure([String message = 'Authentication failed'])
+      : super(message);
 }
 
 /// Failure for invalid data or validation errors
 class ValidationFailure extends Failure {
-  const ValidationFailure([String message = 'Validation failed']) : super(message);
+  const ValidationFailure([String message = 'Validation failed'])
+      : super(message);
 }
 
 /// Failure for data not found errors
 class NotFoundFailure extends Failure {
-  const NotFoundFailure([String message = 'Resource not found']) : super(message);
+  const NotFoundFailure([String message = 'Resource not found'])
+      : super(message);
 }
 
 /// Failure for storage/cache errors
 class CacheFailure extends Failure {
-  const CacheFailure([String message = 'Cache operation failed']) : super(message);
+  const CacheFailure([String message = 'Cache operation failed'])
+      : super(message);
 }
 
 /// Failure for timeout errors
@@ -48,5 +54,6 @@ class TimeoutFailure extends Failure {
 
 /// Generic failure for unexpected errors
 class UnexpectedFailure extends Failure {
-  const UnexpectedFailure([String message = 'An unexpected error occurred']) : super(message);
+  const UnexpectedFailure([String message = 'An unexpected error occurred'])
+      : super(message);
 }

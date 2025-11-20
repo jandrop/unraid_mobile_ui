@@ -19,14 +19,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: providers,
-        child: Consumer<ThemeNotifier>(
-          builder: (context, themeNotifier, child) {
-            return MaterialApp(
+        child:
+            Consumer<ThemeNotifier>(builder: (context, themeNotifier, child) {
+          return MaterialApp(
               title: 'unConnect',
               debugShowCheckedModeBanner: false,
               theme: _buildLightTheme(),
               darkTheme: _buildDarkTheme(),
-              themeMode: themeNotifier.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              themeMode:
+                  themeNotifier.isDarkMode ? ThemeMode.dark : ThemeMode.light,
               onGenerateRoute: Routes.onGenerateRoute,
               home: Consumer<AuthState>(builder: (context, state, child) {
                 if (state.initialized) {
@@ -39,13 +40,10 @@ class MyApp extends StatelessWidget {
                   return const LoginPage();
                 } else {
                   return Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator()));
+                      body: Center(child: CircularProgressIndicator()));
                 }
-              })
-            );
-          }
-        ));
+              }));
+        }));
   }
 
   ThemeData _buildLightTheme() {
@@ -53,7 +51,7 @@ class MyApp extends StatelessWidget {
       seedColor: const Color(0xFFFF9800),
       brightness: Brightness.light,
     );
-    
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
@@ -105,7 +103,7 @@ class MyApp extends StatelessWidget {
       seedColor: const Color(0xFFFF9800),
       brightness: Brightness.dark,
     );
-    
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,

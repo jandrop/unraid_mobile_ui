@@ -12,10 +12,12 @@ class ThemeNotifier extends ChangeNotifier {
     saveTheme();
     notifyListeners();
   }
+
   Future<void> saveTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDarkMode', _isDarkMode);
   }
+
   Future<void> loadTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isDarkMode = prefs.getBool('isDarkMode') ?? false;
