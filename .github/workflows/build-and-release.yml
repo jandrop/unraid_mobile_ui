@@ -1,0 +1,210 @@
+name: Build and Release Android APK
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+env:
+  FLUTTER_VERSION: '3.24.5'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+  build:
+    name: Build Android APK
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Extract version from pubspec.yaml
+        id: extract_version
+        run: |
+          VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2)
+          VERSION_NAME=$(echo $VERSION | cut -d '+' -f 1)
+          BUILD_NUMBER=$(echo $VERSION | cut -d '+' -f 2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION_NAME ($BUILD_NUMBER)"
+
+      - name: Build APK
+        run: flutter build apk --release --split-per-abi
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      - name: Rename APK files
+        run: |
+          VERSION_NAME="${{ steps.extract_version.outputs.version_name }}"
+          BUILD_NUMBER="${{ steps.extract_version.outputs.build_number }}"
+          cd build/app/outputs/flutter-apk
+          mv app-armeabi-v7a-release.apk unConnect-${VERSION_NAME}-${BUILD_NUMBER}-armeabi-v7a.apk
+          mv app-arm64-v8a-release.apk unConnect-${VERSION_NAME}-${BUILD_NUMBER}-arm64-v8a.apk
+          mv app-x86_64-release.apk unConnect-${VERSION_NAME}-${BUILD_NUMBER}-x86_64.apk
+
+      - name: Generate checksums
+        run: |
+          cd build/app/outputs/flutter-apk
+          sha256sum *.apk > checksums.txt
+          cat checksums.txt
+
+      - name: Create Release Notes
+        id: release_notes
+        run: |
+          VERSION_NAME="${{ steps.extract_version.outputs.version_name }}"
+          BUILD_NUMBER="${{ steps.extract_version.outputs.build_number }}"
+          
+          # Get commit messages since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"- %s" | head -20)
+          else
+            COMMITS=$(git log ${LAST_TAG}..HEAD --oneline --pretty=format:"- %s")
+          fi
+          
+          # Create release notes
+          cat > release_notes.md << EOF
+          # unConnect v${VERSION_NAME} (Build ${BUILD_NUMBER})
+          
+          ## 📱 Android Release
+          
+          ### 🎨 What's New
+          ${COMMITS}
+          
+          ### 📦 Downloads
+          
+          Choose the APK that matches your device architecture:
+          - **ARM64 (arm64-v8a)**: Most modern Android devices (2015+)
+          - **ARM (armeabi-v7a)**: Older 32-bit ARM devices
+          - **x86_64**: Android emulators and x86 devices
+          
+          ### 📋 Installation
+          
+          1. Download the appropriate APK for your device
+          2. Enable "Install from Unknown Sources" in Android settings
+          3. Open the APK file to install
+          
+          ### 🔐 Checksums
+          
+          \`\`\`
+          $(cat build/app/outputs/flutter-apk/checksums.txt)
+          \`\`\`
+          
+          ---
+          Built with Flutter ${{ env.FLUTTER_VERSION }} | Material Design 3
+          EOF
+          
+          cat release_notes.md
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/flutter-apk/checksums.txt
+          retention-days: 30
+
+      - name: Upload App Bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          VERSION_NAME="${{ steps.extract_version.outputs.version_name }}"
+          BUILD_NUMBER="${{ steps.extract_version.outputs.build_number }}"
+          TAG_NAME="v${VERSION_NAME}-${BUILD_NUMBER}"
+          
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release $TAG_NAME already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release $TAG_NAME does not exist"
+          fi
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.check_release.outputs.tag_name }}
+          name: unConnect ${{ steps.extract_version.outputs.version_name }} (Build ${{ steps.extract_version.outputs.build_number }})
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/flutter-apk/checksums.txt
+            build/app/outputs/bundle/release/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update existing release
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          echo "Release already exists. Skipping creation."
+          echo "To create a new release, bump the version in pubspec.yaml"
