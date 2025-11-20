@@ -6,9 +6,6 @@ on:
       - main
       - develop
 
-env:
-  FLUTTER_VERSION: '3.24.5'
-
 jobs:
   test:
     name: Test & Analyze
@@ -17,6 +14,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract Flutter version from pubspec.yaml
+        id: flutter_version
+        run: |
+          FLUTTER_VERSION=$(grep 'flutter: ' pubspec.yaml | sed 's/.*"\(.*\)"/\1/')
+          echo "version=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
+          echo "Using Flutter version: $FLUTTER_VERSION"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -27,7 +31,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version: ${{ steps.flutter_version.outputs.version }}
           channel: 'stable'
           cache: true
 
