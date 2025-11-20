@@ -86,17 +86,12 @@ class AuthState extends ChangeNotifier {
       httpClient: getInsecureIOClient(),
     );
 
-    final wsLink = WebSocketLink(
-      wsEndPoint,
-      config: SocketClientConfig(
-        autoReconnect: true,
-        initialPayload: {
+    final wsLink = WebSocketLink(wsEndPoint,
+        config: SocketClientConfig(autoReconnect: true, initialPayload: {
           'Origin': packageName,
           'x-api-key': token,
-        }
-      ),
-      subProtocol: GraphQLProtocol.graphqlTransportWs
-    );
+        }),
+        subProtocol: GraphQLProtocol.graphqlTransportWs);
 
     final link = Link.split(
       (request) => request.isSubscription,
@@ -244,5 +239,4 @@ class AuthState extends ChangeNotifier {
     await storage.setString('multiservers', jsonEncode(servers));
     notifyListeners();
   }
-
 }

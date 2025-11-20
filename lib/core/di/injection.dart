@@ -28,7 +28,7 @@ void initializeGraphQLClient(GraphQLConfig config) {
   if (sl.isRegistered<IGraphQLClient>()) {
     sl.unregister<IGraphQLClient>();
   }
-  
+
   sl.registerLazySingleton<IGraphQLClient>(
     () => UnraidGraphQLClient(config),
   );

@@ -9,7 +9,6 @@ class OsPage extends StatefulWidget {
 }
 
 class _MyOsPageState extends State<OsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -20,8 +19,7 @@ class _MyOsPageState extends State<OsPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('OS'),
-          actions: <Widget>[
-          ],
+          actions: <Widget>[],
           elevation: 0,
         ),
         body: Container(child: showListContent()));

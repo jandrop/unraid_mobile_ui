@@ -47,9 +47,11 @@ class _MyDashboardPageState extends State<DashboardPage> {
   }
 
   void getMetricsSubscriptions() {
-    _cpuMetricsSubscription = _state!.client!.subscribe(SubscriptionOptions(
-      document: gql(Subscriptions.getCpuMetrics),
-    )).asBroadcastStream();
+    _cpuMetricsSubscription = _state!.client!
+        .subscribe(SubscriptionOptions(
+          document: gql(Subscriptions.getCpuMetrics),
+        ))
+        .asBroadcastStream();
   }
 
   void getNotifications() {
@@ -107,7 +109,9 @@ class _MyDashboardPageState extends State<DashboardPage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(
-                _theme!.isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                _theme!.isDarkMode
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
               ),
               tooltip: _theme!.isDarkMode ? 'Dark mode' : 'Light mode',
               onPressed: () {
@@ -199,16 +203,22 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                   children: [
                                     Text(
                                       server['name'],
-                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       'Version ${vars['version']}',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -240,13 +250,13 @@ class _MyDashboardPageState extends State<DashboardPage> {
   Widget _buildStatusChip(String status) {
     final colorScheme = Theme.of(context).colorScheme;
     final isOnline = status == 'ONLINE';
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isOnline 
-          ? colorScheme.tertiaryContainer 
-          : colorScheme.errorContainer,
+        color: isOnline
+            ? colorScheme.tertiaryContainer
+            : colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -264,9 +274,9 @@ class _MyDashboardPageState extends State<DashboardPage> {
           Text(
             status,
             style: TextStyle(
-              color: isOnline 
-                ? colorScheme.onTertiaryContainer 
-                : colorScheme.onErrorContainer,
+              color: isOnline
+                  ? colorScheme.onTertiaryContainer
+                  : colorScheme.onErrorContainer,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
@@ -278,7 +288,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
 
   Widget _buildInfoRow(IconData icon, String label, String value) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Row(
       children: [
         Container(
@@ -300,14 +310,14 @@ class _MyDashboardPageState extends State<DashboardPage> {
         Text(
           '$label: ',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
+                color: colorScheme.onSurfaceVariant,
+              ),
         ),
         Text(
           value,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );
@@ -376,9 +386,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                             children: [
                               Text(
                                 'Array',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               _buildStatusChip(array['state']),
@@ -391,8 +404,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                     Text(
                       'Storage',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 12),
                     _buildStorageProgress(
@@ -411,7 +424,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                             ? Icons.expand_less
                             : Icons.expand_more,
                       ),
-                      label: Text(_showMoreArrayDetails ? 'Show less' : 'Show details'),
+                      label: Text(
+                          _showMoreArrayDetails ? 'Show less' : 'Show details'),
                     ),
                     if (_showMoreArrayDetails) ...[
                       const SizedBox(height: 16),
@@ -420,8 +434,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                       Text(
                         'Disks',
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       const SizedBox(height: 12),
                       ...List.generate(
@@ -441,19 +455,26 @@ class _MyDashboardPageState extends State<DashboardPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       disk['name'] ?? 'Unknown',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                     Text(
                                       '${(used / 1024 / 1024 / 1024).toStringAsFixed(1)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(1)} TB',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -463,7 +484,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                   child: LinearProgressIndicator(
                                     value: percent,
                                     minHeight: 8,
-                                    backgroundColor: colorScheme.surfaceContainerHighest,
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHighest,
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       _getProgressColor(percent),
                                     ),
@@ -478,9 +500,10 @@ class _MyDashboardPageState extends State<DashboardPage> {
                         const SizedBox(height: 16),
                         Text(
                           'Caches',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         const SizedBox(height: 12),
                         ...List.generate(
@@ -488,10 +511,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                           (index) {
                             final cache = array['caches'][index];
                             double total = cache['fsSize'] != null
-                                ? double.tryParse(cache['fsSize'].toString()) ?? 0
+                                ? double.tryParse(cache['fsSize'].toString()) ??
+                                    0
                                 : 0;
                             double used = cache['fsUsed'] != null
-                                ? double.tryParse(cache['fsUsed'].toString()) ?? 0
+                                ? double.tryParse(cache['fsUsed'].toString()) ??
+                                    0
                                 : 0;
                             double percent = total > 0 ? (used / total) : 0;
                             return Padding(
@@ -500,19 +525,27 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         cache['name'] ?? 'Unknown',
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                       ),
                                       Text(
                                         '${(used / 1024 / 1024 / 1024).toStringAsFixed(1)} / ${(total / 1024 / 1024 / 1024).toStringAsFixed(1)} TB',
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color:
+                                                  colorScheme.onSurfaceVariant,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -522,7 +555,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                     child: LinearProgressIndicator(
                                       value: percent,
                                       minHeight: 8,
-                                      backgroundColor: colorScheme.surfaceContainerHighest,
+                                      backgroundColor:
+                                          colorScheme.surfaceContainerHighest,
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                         _getProgressColor(percent),
                                       ),
@@ -547,7 +581,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
 
   Widget _buildStorageProgress(double percent, String label) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Column(
       children: [
         Row(
@@ -556,15 +590,15 @@ class _MyDashboardPageState extends State<DashboardPage> {
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             Text(
               '${(percent * 100).toStringAsFixed(1)}%',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: _getProgressColor(percent),
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: _getProgressColor(percent),
+                  ),
             ),
           ],
         ),
@@ -606,19 +640,17 @@ class _MyDashboardPageState extends State<DashboardPage> {
             final metrics = snapshot.data!.data!['metrics'];
             final colorScheme = Theme.of(context).colorScheme;
 
-            double totalMem = double.tryParse(
-                        metrics['memory']['total'].toString())
-                    ?.roundToDouble() ??
-                0;
-            double totalGB =
-                (totalMem / 1024 / 1024 / 1024).roundToDouble();
-            double available = double.tryParse(
-                        metrics['memory']['available'].toString())
-                    ?.roundToDouble() ??
-                0;
+            double totalMem =
+                double.tryParse(metrics['memory']['total'].toString())
+                        ?.roundToDouble() ??
+                    0;
+            double totalGB = (totalMem / 1024 / 1024 / 1024).roundToDouble();
+            double available =
+                double.tryParse(metrics['memory']['available'].toString())
+                        ?.roundToDouble() ??
+                    0;
             double used = (totalMem - available).roundToDouble();
-            double usedGB =
-                (used / 1024 / 1024 / 1024).roundToDouble();
+            double usedGB = (used / 1024 / 1024 / 1024).roundToDouble();
             double memPercent = totalMem > 0 ? used / totalMem : 0;
 
             return Card(
@@ -645,9 +677,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                               Expanded(
                                 child: Text(
                                   'System',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
                               ),
                             ],
@@ -655,23 +690,30 @@ class _MyDashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 20),
                           Text(
                             'CPU',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             '${info['cpu']['manufacturer']} ${info['cpu']['brand']}',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '${info['cpu']['cores']} Cores • ${info['cpu']['threads']} Threads',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                           ),
                           const SizedBox(height: 12),
                           StreamBuilder<QueryResult>(
@@ -684,11 +726,15 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                       null) {
                                 final cpuMetrics =
                                     cpuSnapshot.data!.data!['systemMetricsCpu'];
-                                percent =
-                                    double.tryParse(cpuMetrics['percentTotal'].toString()) ?? 0;
+                                percent = double.tryParse(
+                                        cpuMetrics['percentTotal']
+                                            .toString()) ??
+                                    0;
                               } else {
-                                percent =
-                                    double.tryParse(metrics['cpu']['percentTotal'].toString()) ?? 0;
+                                percent = double.tryParse(metrics['cpu']
+                                            ['percentTotal']
+                                        .toString()) ??
+                                    0;
                               }
                               return _buildStorageProgress(
                                 percent / 100,
@@ -701,9 +747,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                           const SizedBox(height: 20),
                           Text(
                             'Memory',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           const SizedBox(height: 12),
                           _buildStorageProgress(
@@ -714,7 +763,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest.withAlpha(128),
+                              color: colorScheme.surfaceContainerHighest
+                                  .withAlpha(128),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -728,9 +778,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                 Expanded(
                                   child: Text(
                                     '${info['baseboard']['manufacturer']} ${info['baseboard']['model']}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -760,7 +813,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
             final colorScheme = Theme.of(context).colorScheme;
             final isOk = parityHistory['status'] == 'OK' ||
                 parityHistory['status'] == 'COMPLETED';
-            
+
             return Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -772,16 +825,16 @@ class _MyDashboardPageState extends State<DashboardPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isOk 
-                              ? colorScheme.tertiaryContainer 
-                              : colorScheme.errorContainer,
+                            color: isOk
+                                ? colorScheme.tertiaryContainer
+                                : colorScheme.errorContainer,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: FaIcon(
                             FontAwesomeIcons.heartPulse,
-                            color: isOk 
-                              ? colorScheme.onTertiaryContainer 
-                              : colorScheme.onErrorContainer,
+                            color: isOk
+                                ? colorScheme.onTertiaryContainer
+                                : colorScheme.onErrorContainer,
                             size: 24,
                           ),
                         ),
@@ -792,9 +845,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                             children: [
                               Text(
                                 'Parity',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               _buildStatusChip(parityHistory['status']),
@@ -849,7 +905,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
 
   Widget _buildMetricChip(IconData icon, String label, String value) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -870,8 +926,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
               ),
             ],
           ),
@@ -879,8 +935,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
           Text(
             value,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ],
       ),
@@ -899,7 +955,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
               return const SizedBox.shrink();
             }
             final colorScheme = Theme.of(context).colorScheme;
-            
+
             return Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -924,9 +980,12 @@ class _MyDashboardPageState extends State<DashboardPage> {
                         Expanded(
                           child: Text(
                             'UPS Devices',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ),
                       ],
@@ -936,7 +995,7 @@ class _MyDashboardPageState extends State<DashboardPage> {
                       final device = upsDevices[index];
                       final battery = device['battery'];
                       final power = device['power'];
-                      
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -949,10 +1008,15 @@ class _MyDashboardPageState extends State<DashboardPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                device['name'] ?? device['model'] ?? 'Unknown Model',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                device['name'] ??
+                                    device['model'] ??
+                                    'Unknown Model',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               _buildStatusChip(device['status'] ?? 'Unknown'),
                             ],
@@ -981,7 +1045,8 @@ class _MyDashboardPageState extends State<DashboardPage> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest.withAlpha(128),
+                              color: colorScheme.surfaceContainerHighest
+                                  .withAlpha(128),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -997,16 +1062,22 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                     const SizedBox(height: 4),
                                     Text(
                                       'In',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
                                       '${power?['inputVoltage'] ?? '-'} V',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -1025,16 +1096,22 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                     const SizedBox(height: 4),
                                     Text(
                                       'Out',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
                                       '${power?['outputVoltage'] ?? '-'} V',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -1053,16 +1130,22 @@ class _MyDashboardPageState extends State<DashboardPage> {
                                     const SizedBox(height: 4),
                                     Text(
                                       'Load',
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
                                       '${power?['loadPercentage'] ?? '-'}%',
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -1101,9 +1184,9 @@ class _MyDashboardPageState extends State<DashboardPage> {
                   isLabelVisible: unreadTotalCount > 0,
                   label: Text(unreadTotalCount.toString()),
                   child: Icon(
-                    unreadTotalCount > 0 
-                      ? Icons.notifications_active 
-                      : Icons.notifications_outlined,
+                    unreadTotalCount > 0
+                        ? Icons.notifications_active
+                        : Icons.notifications_outlined,
                   ),
                 ));
           } else {

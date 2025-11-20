@@ -126,7 +126,7 @@ void main() {
 
       // Act
       await initializeDependencies();
-      
+
       // Assert - Should throw on second initialization
       expect(
         () async => await initializeDependencies(),
@@ -148,7 +148,7 @@ void main() {
       final storage = sl<ILocalStorage>();
       expect(sharedPrefs, isNotNull);
       expect(storage, isNotNull);
-      
+
       // Verify storage can use shared preferences
       await storage.setString('test', 'value');
       expect(sharedPrefs.getString('test'), 'value');
@@ -160,7 +160,7 @@ void main() {
       // Arrange
       SharedPreferences.setMockInitialValues({});
       await initializeDependencies();
-      
+
       final config = GraphQLConfig(
         endpoint: 'http://test.local/graphql',
         wsEndpoint: 'ws://test.local/graphql',
@@ -177,18 +177,19 @@ void main() {
       expect(client, isA<UnraidGraphQLClient>());
     });
 
-    test('should replace existing GraphQL client on reinitialization', () async {
+    test('should replace existing GraphQL client on reinitialization',
+        () async {
       // Arrange
       SharedPreferences.setMockInitialValues({});
       await initializeDependencies();
-      
+
       final config1 = GraphQLConfig(
         endpoint: 'http://test1.local/graphql',
         wsEndpoint: 'ws://test1.local/graphql',
         apiKey: 'key1',
         origin: 'http://test1.local',
       );
-      
+
       final config2 = GraphQLConfig(
         endpoint: 'http://test2.local/graphql',
         wsEndpoint: 'ws://test2.local/graphql',
@@ -199,7 +200,7 @@ void main() {
       // Act
       initializeGraphQLClient(config1);
       final client1 = sl<IGraphQLClient>() as UnraidGraphQLClient;
-      
+
       initializeGraphQLClient(config2);
       final client2 = sl<IGraphQLClient>() as UnraidGraphQLClient;
 
@@ -213,7 +214,7 @@ void main() {
       // Arrange
       SharedPreferences.setMockInitialValues({});
       await initializeDependencies();
-      
+
       final config = GraphQLConfig(
         endpoint: 'http://test.local/graphql',
         wsEndpoint: 'ws://test.local/graphql',
@@ -231,4 +232,3 @@ void main() {
     });
   });
 }
-

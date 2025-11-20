@@ -9,7 +9,6 @@ class CpuPage extends StatefulWidget {
 }
 
 class _MyCpuPageState extends State<CpuPage> {
-
   @override
   void initState() {
     super.initState();
@@ -20,8 +19,7 @@ class _MyCpuPageState extends State<CpuPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('CPU'),
-          actions: <Widget>[
-          ],
+          actions: <Widget>[],
           elevation: 0,
         ),
         body: Container(child: showListContent()));

@@ -19,7 +19,7 @@ class _MyPluginsPageState extends State<PluginsPage> {
   void initState() {
     super.initState();
     _state = Provider.of<AuthState>(context, listen: false);
-    if(_state!.client != null) {
+    if (_state!.client != null) {
       _state!.client!.resetStore();
       getPlugins();
     }
@@ -64,9 +64,7 @@ class _MyPluginsPageState extends State<PluginsPage> {
                   return ListTile(
                       leading: const Icon(Icons.extension),
                       title: Text(plugin['name']),
-                      subtitle: Text('Version: ${plugin['version']}')
-                      
-                      );
+                      subtitle: Text('Version: ${plugin['version']}'));
                 });
           } else {
             return const Center(child: Text('No data available'));

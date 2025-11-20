@@ -110,8 +110,7 @@ void main() {
       test('should return true when value is set successfully', () async {
         const key = 'test_key';
         const value = true;
-        when(() => mockPrefs.setBool(key, value))
-            .thenAnswer((_) async => true);
+        when(() => mockPrefs.setBool(key, value)).thenAnswer((_) async => true);
 
         final result = await storage.setBool(key, value);
 

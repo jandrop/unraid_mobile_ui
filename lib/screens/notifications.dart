@@ -19,7 +19,7 @@ class _MyNotificationPageState extends State<NotificationPage> {
   void initState() {
     super.initState();
     _state = Provider.of<AuthState>(context, listen: false);
-    if(_state!.client != null) {
+    if (_state!.client != null) {
       _state!.client!.resetStore();
       getNotifications();
     }

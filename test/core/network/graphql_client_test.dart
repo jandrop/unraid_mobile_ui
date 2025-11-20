@@ -96,7 +96,7 @@ void main() {
       );
 
       final client = UnraidGraphQLClient(config);
-      
+
       expect(() => client.dispose(), returnsNormally);
     });
   });
